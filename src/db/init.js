@@ -36,19 +36,6 @@ db.serialize(() => {
     }
   });
 
-  // Insert sample data (optional - remove in production)
-  db.run(`
-    INSERT OR IGNORE INTO images (name, url) VALUES
-    ('sample1', 'sample1.jpg'),
-    ('sample2', 'sample2.png')
-  `, (err) => {
-    if (err) {
-      console.error('Error inserting sample data:', err.message);
-    } else {
-      console.log('Sample data inserted (if not exists)');
-    }
-  });
-
   db.close((err) => {
     if (err) {
       console.error('Error closing database:', err.message);

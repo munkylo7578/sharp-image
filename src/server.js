@@ -1,10 +1,14 @@
 const express = require('express');
+const morgan = require('morgan');
 const ImageService = require('./services/imageService');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const imageService = new ImageService();
+
+// HTTP request logging
+app.use(morgan('dev'));
 
 // Initialize database connection
 imageService.initialize().catch((err) => {
@@ -27,7 +31,9 @@ app.get('/image/:name', async (req, res) => {
       return res.status(400).json({ error: 'Image name is required' });
     }
 
-    // Get resized image
+    console.log('[GET /image]', { name, width, height });
+
+    // Get resized imagepage=
     const { buffer, format } = await imageService.getResizedImage(name, width, height);
 
     // Set appropriate headers
@@ -42,6 +48,18 @@ app.get('/image/:name', async (req, res) => {
   } catch (error) {
     console.error('Error processing image request:', error);
     res.status(404).json({ error: error.message });
+  }
+});
+app.get('/images', async (req, res) => {
+  try{
+    const { page = '1', pageSize = '10' } = req.query;
+    const pageNum = parseInt(page, 10);
+    const sizeNum = parseInt(pageSize, 10);
+    const images = await imageService.listImages(pageNum, sizeNum);
+    res.json(images);
+  } catch (error) {
+    console.error('Error listing images:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 

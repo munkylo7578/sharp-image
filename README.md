@@ -100,6 +100,21 @@ docker-compose down
 
 **Note:** The database is initialized automatically during the Docker build process and on container start if it doesn't exist. No manual database setup is required when using Docker.
 
+### 6. Run with Docker in watch mode (nodemon)
+
+```bash
+# Start the nodemon-powered dev container (watches files and reloads on change)
+docker compose up -d image-service-dev
+
+# View logs
+docker compose logs -f image-service-dev
+
+# Stop
+docker compose down
+```
+
+This dev container mounts your working directory into `/app` and runs `npm run dev` with nodemon. File changes trigger automatic reloads. On Windows, polling is enabled via `CHOKIDAR_USEPOLLING=true`.
+
 ## API Endpoints
 
 ### Health Check

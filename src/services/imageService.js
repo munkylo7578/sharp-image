@@ -72,7 +72,14 @@ class ImageService {
       throw error;
     }
   }
-
+  async listImages(page = 1, pageSize = 10) {
+    try{
+      const images = await this.db.getImages(page, pageSize);
+      return images;
+    } catch (error) {
+      throw new Error(`Failed to list images: ${error.message}`);
+    }
+  }
   async close() {
     await this.db.close();
   }

@@ -1,4 +1,4 @@
-const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, GetObjectCommand, ListObjectsV2Command } = require('@aws-sdk/client-s3');
 require('dotenv').config();
 
 class R2Service {
@@ -32,6 +32,33 @@ class R2Service {
       return Buffer.concat(chunks);
     } catch (error) {
       throw new Error(`Failed to fetch image from R2: ${error.message}`);
+    }
+  }
+
+  async listObjects(prefix = '') {
+    try {
+      const objects = [];
+      let continuationToken = undefined;
+
+      do {
+        const command = new ListObjectsV2Command({
+          Bucket: this.bucketName,
+          Prefix: prefix,
+          ContinuationToken: continuationToken,
+        });
+
+        const response = await this.client.send(command);
+        
+        if (response.Contents) {
+          objects.push(...response.Contents);
+        }
+
+        continuationToken = response.NextContinuationToken;
+      } while (continuationToken);
+
+      return objects;
+    } catch (error) {
+      throw new Error(`Failed to list objects from R2: ${error.message}`);
     }
   }
 }

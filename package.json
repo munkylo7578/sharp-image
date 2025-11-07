@@ -4,13 +4,14 @@
   "description": "Image service using Sharp.js, SQLite, and Cloudflare R2",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "start": "nodemon -L --inspect=0.0.0.0 index.js",
+    "dev": "nodemon --watch src src/server.js",
     "init-db": "node src/db/init.js",
     "db:list": "node src/db/listImages.js",
     "db:add": "node src/db/addImage.js",
     "db:update": "node src/db/updateImage.js",
-    "db:delete": "node src/db/deleteImage.js"
+    "db:delete": "node src/db/deleteImage.js",
+    "db:sync-r2": "node src/db/syncFromR2.js"
   },
   "keywords": ["image", "sharp", "sqlite", "cloudflare-r2"],
   "author": "",
@@ -20,7 +21,8 @@
     "sharp": "^0.34.4",
     "sqlite3": "^5.1.7",
     "@aws-sdk/client-s3": "^3.922.0",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "morgan": "^1.10.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
