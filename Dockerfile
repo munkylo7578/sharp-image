@@ -8,11 +8,11 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-# create data folder
+
 RUN mkdir -p /app/data
 
-# entrypoint
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN sed -i 's/\r$//' /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 
 EXPOSE 3000
