@@ -18,6 +18,14 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
       - ./data:/app/data
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.image.rule=Host(`image.munkylo.xyz`)"
+      - "traefik.http.routers.image.entrypoints=https"
+      - "traefik.http.routers.image.tls.certresolver=cloudflare"
+      - "traefik.http.services.image.loadbalancer.server.port=3002"
     restart: always
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT:-3002}/health"]
@@ -25,4 +33,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
+networks:
+  proxy:
+    external: true
